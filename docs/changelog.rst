@@ -159,6 +159,11 @@ New features:
 * :doc:`/plugins/web`: add DELETE and PATCH methods for modifying items
 * :doc:`/plugins/lyrics`: Removed LyricWiki source (shut down on 21/09/2020).
 * Added a ``--plugins`` (or ``-p``) flag to specify a list of plugins at startup.
+* Fields in queries now fall back to an item's album and check its fields too.
+  Notably, this allows querying items by an album flex attribute (also in path
+  configuration). Plugins: Also applies to normal item access.
+  Thanks to :user:`FichteFoll`.
+  :bug:`2797` :bug:`2988`
 
 Fixes:
 
