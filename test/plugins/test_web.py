@@ -665,6 +665,29 @@ class TestWebPlugin(WebPluginMixin, PytestTestHelper):
         # Remove the item
         self.lib.get_item(item_id).remove()
 
+    @pytest.mark.parametrize(
+        "img_ext, mime_type", [("jpg", "image/jpeg"), ("png", "image/png")]
+    )
+    def test_get_album_art_embedded(self, img_ext, mime_type):
+        path = self.create_mediafile_fixture(images=[img_ext])
+        album = self.lib.add_album([Item.from_path(path)])
+        expected = (_common.RSRC / f"image-2x3.{img_ext}").read_bytes()
+
+        response = self.client.get(f"/album/{album.id}/art")
+
+        assert response.status_code == 200
+        assert response.mimetype == mime_type
+        assert response.data == expected
+
+    def test_get_album_art_missing(self):
+        album = self.lib.add_album(
+            [Item.from_path(self.create_mediafile_fixture())]
+        )
+
+        response = self.client.get(f"/album/{album.id}/art")
+
+        assert response.status_code == 404
+
     def test_get_item_file(self):
         ipath = self.temp_path / "testfile2.mp3"
         shutil.copy(_common.RSRC / "full.mp3", ipath)
